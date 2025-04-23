@@ -25,7 +25,8 @@ supabase = create_client(url, key)
 # postLimit: Number of posts grabbed
 # commentAmount: Number of comments grabbed
 # commentLength: Number of characters per comment
-def search_reddit(subreddit_name, keyWords, sortBy, postLimit, commentAmount, commentLength):
+# genre: Genre of the movie
+def search_reddit(subreddit_name, keyWords, sortBy, postLimit, commentAmount, commentLength, genre, year):
     # PostgreSQL connection
     conn = psycopg2.connect(
         dbname= os.getenv("dbname"),
@@ -47,6 +48,12 @@ def search_reddit(subreddit_name, keyWords, sortBy, postLimit, commentAmount, co
             ON CONFLICT (id) DO NOTHING;
         """, (post.id, str(post.subreddit), post.title, post.score))
 
+        # Insert movies into DB
+        cur.execute("""
+            INSERT INTO movie (movie_title, genre, post_id, year)
+            VALUES (%s, %s, %s, %s)
+        """, (keyWords, genre, post.id, year))
+        
         post.comments.replace_more(limit=0)
         for comment in post.comments[:commentAmount]:
             body_trimmed = comment.body[:commentLength]
@@ -63,7 +70,7 @@ def search_reddit(subreddit_name, keyWords, sortBy, postLimit, commentAmount, co
     cur.close()
     conn.close()
 
-#search_reddit("movies", "minecraft movie", "relevance", 10, 3, 150)
+search_reddit("movies", "sinners", "relevance", 10, 3, 150, "action", 2025)
 
 def show_reddit_tables():
     # Connect to PostgreSQL
@@ -93,4 +100,4 @@ def show_reddit_tables():
     cur.close()
     conn.close()
     
-show_reddit_tables()
+#show_reddit_tables()
