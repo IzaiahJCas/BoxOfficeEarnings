@@ -16,9 +16,12 @@ reddit = praw.Reddit(
 )
 
 # Movies to analyze
-movies = [
-
-]
+movies = []
+with open('Movie_Titles/action.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)  # Skip the header
+    for row in reader:
+        movies.append(row[0])  # Assuming title is the first column
 
 analyzer = SentimentIntensityAnalyzer()
 all_data = []
