@@ -19,9 +19,31 @@ reddit = praw.Reddit(
 movies = []
 with open('Movie_Titles/action.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile)
-    next(reader)  # Skip the header
+    next(reader)
     for row in reader:
-        movies.append(row[0])  # Assuming title is the first column
+        movies.append(row[0])
+with open('Movie_Titles/animation.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)
+    for row in reader:
+        movies.append(row[0])
+with open('Movie_Titles/comedy.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)
+    for row in reader:
+        movies.append(row[0])
+with open('Movie_Titles/horror.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)
+    for row in reader:
+        movies.append(row[0])
+with open('Movie_Titles/romance.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)
+    for row in reader:
+        movies.append(row[0])
+
+        
 
 analyzer = SentimentIntensityAnalyzer()
 all_data = []
@@ -29,7 +51,7 @@ all_data = []
 # Scrape Reddit and analyze sentiment
 for movie in movies:
     subreddit = reddit.subreddit("movies")
-    for post in subreddit.search(movie, sort="relevance", limit=5):
+    for post in subreddit.search(movie, sort="relevance", limit=20):
         post.comments.replace_more(limit=0)
         for comment in post.comments[:5]:  # Take 5 comments per post
             sentiment = analyzer.polarity_scores(comment.body)
@@ -61,8 +83,8 @@ summary.rename(columns={
 print(summary)
 
 # Save to CSV
-df.to_csv("reddit_movie_comments_trial.csv", index=False)
-summary.to_csv("reddit_movie_summary_trial.csv", index=False)
+df.to_csv("larger_trial_comments.csv", index=False)
+summary.to_csv("larger_trial_summary.csv", index=False)
 
 # EDA Plot 1: Average Sentiment per Movie
 plt.figure(figsize=(10, 5))
