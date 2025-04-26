@@ -7,7 +7,7 @@ import datetime
 import matplotlib.pyplot as plt
 
 # Load Reddit API credentials
-load_dotenv()
+load_dotenv(dotenv_path=".env.local")
 
 reddit = praw.Reddit(
     client_id=os.getenv("clientID"),
@@ -35,7 +35,7 @@ all_data = []
 # Scrape Reddit and analyze sentiment
 for movie in movies:
     subreddit = reddit.subreddit("movies")
-    for post in subreddit.search(movie, sort="relevance", limit=5):
+    for post in subreddit.search(movie, sort="relevance", limit=1):
         post.comments.replace_more(limit=0)
         for comment in post.comments[:5]:  # Take 5 comments per post
             sentiment = analyzer.polarity_scores(comment.body)
