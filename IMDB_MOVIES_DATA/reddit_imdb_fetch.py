@@ -33,7 +33,7 @@ def fetch_comments_for_title(title):
             title, sort="relevance", limit=10
         ):  # increase posts per movie
             post.comments.replace_more(limit=0)
-            for comment in post.comments[:5]:  # get 5 comments per post
+            for comment in post.comments[:20]:
                 rows.append(
                     {
                         "movie_title": title,
@@ -49,13 +49,13 @@ def fetch_comments_for_title(title):
                     }
                 )
     except Exception as e:
-        print(f"❌ Error for {title}: {e}")
+        print(f"Error for {title}: {e}")
     return rows
 
 
 # Parallel fetching
 all_data = []
-max_threads = 10  # careful: don't use too many threads or you will get rate limited
+max_threads = 10
 with ThreadPoolExecutor(max_workers=max_threads) as executor:
     futures = [executor.submit(fetch_comments_for_title, title) for title in top_titles]
     for future in as_completed(futures):
@@ -66,4 +66,4 @@ with ThreadPoolExecutor(max_workers=max_threads) as executor:
 # Save
 df_combined = pd.DataFrame(all_data)
 df_combined.to_csv("combined_reddit_sentiment.csv", index=False)
-print(f"✅ Saved {len(df_combined)} total comments.")
+print(f"Saved {len(df_combined)} total comments.")
