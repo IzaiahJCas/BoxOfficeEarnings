@@ -1,29 +1,32 @@
 from supabase import create_client, Client
 url = "https://flpnzndwioffpeyozign.supabase.co"
-with open('C:\\Users\\henry\\OneDrive\\Desktop\\TestFolder\\Key.txt', 'r') as file:
+with open('SupabaseKey.txt', 'r') as file:
     key = file.read().strip()
 supabase: Client = create_client(url, key)
 
-reddit_data = supabase.table('reddit_sentiments').select('movie_title, post_score, comment_score').execute()
+reddit_data = supabase.table('reddit_sentiments').select('movie_title, comment_text').execute()
 print("Table 1 loaded")
 
 movies_data = supabase.table('MoviesCleaned').select('Title, BoxOffice').execute()
 print("Table 2 loaded")
 
 import pandas as pd
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+analyzer = SentimentIntensityAnalyzer()
 reddit_df = pd.DataFrame(reddit_data.data)
+reddit_df['comment_sentiment'] = reddit_df['comment_text'].apply(lambda x: analyzer.polarity_scores(x)['compound'])
 movies_df = pd.DataFrame(movies_data.data)
 print("Pandas df loaded")
+print(reddit_df)
+print(movies_df)
 
-if 'merged_df' in locals():
-    del merged_df
-merged_df = pd.merge(reddit_df, movies_df, left_on='movie_title', right_on='Title')
+merged_df = pd.merge(movies_df, reddit_df, left_on='Title', right_on='movie_title')
 print("Pandas df merged")
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
-x = merged_df[['post_score', 'comment_score']]
+x = merged_df[['comment_sentiment']]
 y = merged_df['BoxOffice']
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
