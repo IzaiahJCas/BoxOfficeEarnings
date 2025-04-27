@@ -3,7 +3,7 @@ import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# Load your original movie list
+# Load original movie list
 movie_df = pd.read_csv("filtered_imdb_movies.csv")
 
 # Find the index where "Devil's Pass" is
@@ -12,7 +12,7 @@ devils_pass_index = movie_df[movie_df["title"] == "Devil's Pass"].index
 if len(devils_pass_index) == 0:
     print("Devil's Pass not found in your movie list.")
 else:
-    cut_index = devils_pass_index[0] + 1  # Move one after Devil's Pass
+    cut_index = devils_pass_index[0] + 1
     remaining_movies_df = movie_df.iloc[cut_index:]
 
     # Save to a new file
