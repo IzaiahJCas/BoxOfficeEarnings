@@ -1,7 +1,10 @@
 from supabase import create_client, Client
 url = "https://flpnzndwioffpeyozign.supabase.co"
-with open('SupabaseKey.txt', 'r') as file:
-    key = file.read().strip()
+import os
+from dotenv import load_dotenv
+load_dotenv()
+key = os.getenv("supabaseKey")
+url = "https://flpnzndwioffpeyozign.supabase.co"
 supabase: Client = create_client(url, key)
 
 reddit_data = supabase.table('reddit_sentiments').select('movie_title, comment_text').execute()
