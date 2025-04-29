@@ -51,7 +51,6 @@ for idx, row in df.iterrows():
             "imdbRating": data.get("imdbRating", None),
             "imdbVotes": data.get("imdbVotes", None),
             "BoxOffice": data.get("BoxOffice", None),
-            "DVD": data.get("DVD", None),
         }
         omdb_data.append(omdb_movie)
         print(f"Fetched OMDb data for {data.get('Title', imdb_id)}")

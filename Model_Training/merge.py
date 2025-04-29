@@ -5,7 +5,7 @@ import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # 1. Load the two datasets
-movies_df = pd.read_csv("MoviesCleaned_rows.csv")
+movies_df = pd.read_csv("final_movies_cleaned.csv")
 sentiment_df = pd.read_csv("aggregated_movie_sentiment.csv")
 
 # 3. Merge datasets on movie title
